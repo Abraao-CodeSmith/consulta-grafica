@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Serviços</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #fdd835;
+            max-width: 1000px;
+            margin: auto;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #d89700;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #b67c00;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 14px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .resultado {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        @media (max-width: 600px) {
+            th, td {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .card {
+                padding: 15px;
+            }
+            .resultado {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Consultar Serviços</h2>
+            <label>Categoria:</label>
+            <select id="categoria"></select>
+            <label>Descrição:</label>
+            <select id="descricao"></select>
+            <label>Tamanho:</label>
+            <select id="tam"></select>
+            <label>Cores:</label>
+            <select id="cores"></select>
+            <label>Qtde:</label>
+            <select id="qtde"></select>
+            <label>Comissão:</label>
+            <input type="text" id="comissao" placeholder="% comissão">
+            <button id="pesquisar-btn">Pesquisar</button>
+            <button id="limpar-btn">Limpar</button>
+            <div class="table-container">
+                <table id="tabela-servicos">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Categoria</th>
+                            <th>Descrição</th>
+                            <th>Cores</th>
+                            <th>Qtd</th>
+                            <th>Tamanho</th>
+                            <th>Prazo</th>
+                            <th>Preço c/ Comissão</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Calculadora metro quadrado</h2>
+            <label>Largura</label>
+            <input type="text" id="largura" placeholder="Ex: 2.5">
+            <label>Unidade</label>
+            <select id="unidade-largura">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+            </select>
+            <label>Altura</label>
+            <input type="text" id="altura" placeholder="Ex: 1.5">
+            <label>Unidade</label>
+            <select id="unidade-altura">
+                <option value="m">m</option>
+                <option value="cm">cm</option>
+            </select>
+            <label>Quantidade</label>
+            <input type="text" id="quantidade" value="1">
+            <label>Valor por m²</label>
+            <input type="text" id="valor" placeholder="Ex: 45.00">
+            <button id="calcular-btn">calcular</button>
+            <div class="resultado" id="resultado-m2">R$00,00</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
