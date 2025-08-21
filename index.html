@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,35 +12,42 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             background-color: #fdd835;
             max-width: 1000px;
             margin: auto;
             padding: 20px;
         }
+
         .card {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
+
         h2 {
             margin-top: 0;
             font-size: 18px;
         }
+
         label {
             display: block;
             margin-top: 10px;
             font-weight: bold;
         }
-        select, input {
+
+        select,
+        input {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
         button {
             background: #d89700;
             color: white;
@@ -50,43 +57,88 @@
             margin-top: 10px;
             cursor: pointer;
         }
+
         button:hover {
             background: #b67c00;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
-        th, td {
+
+        th,
+        td {
             padding: 10px;
             border: 1px solid #ccc;
             text-align: center;
             font-size: 14px;
         }
+
         .table-container {
             overflow-x: auto;
         }
+
         .resultado {
             margin-top: 15px;
             font-weight: bold;
             font-size: 18px;
         }
+
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #preloader img {
+            width: 25vw;
+            max-width: 280px;
+            min-width: 200px;
+            height: auto;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+
+        #conteudo {
+            display: none;
+        }
+
         @media (max-width: 600px) {
-            th, td {
+
+            th,
+            td {
                 font-size: 12px;
                 padding: 6px;
             }
+
             .card {
                 padding: 15px;
             }
+
             .resultado {
                 font-size: 16px;
             }
         }
     </style>
 </head>
+
 <body>
+    <div id="preloader">
+        <img src="carregando_animado.gif" alt="Carregando...">
+    </div>
     <div class="container">
         <div class="card">
             <h2>Consultar Serviços</h2>
@@ -149,4 +201,5 @@
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

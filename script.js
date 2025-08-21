@@ -8,8 +8,18 @@ async function carregarDados() {
         const response = await fetch("https://grafica-backend-x68u.onrender.com/api/servicos");
         servicos = await response.json();
         preencherCategorias();
+
+        const preloader = document.getElementById("preloader");
+        preloader.classList.add("fade-out");
+
+        setTimeout(() => {
+          preloader.remove();
+          document.getElementById("conteudo").style.display = "block";
+        }, 1000);
+
     } catch (error) {
         console.error("Erro ao carregar dados:", error);
+        
     }
 }
 
