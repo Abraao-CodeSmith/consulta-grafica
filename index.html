@@ -5,200 +5,621 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consulta de Serviços</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* ===== VARIÁVEIS ===== */
+        :root {
+            --color-primary: #f5a623;
+            --color-primary-dark: #d4891a;
+            --color-primary-light: #fef3e2;
+            --color-bg: #f4f6f9;
+            --color-surface: #ffffff;
+            --color-border: #e2e8f0;
+            --color-text: #1a202c;
+            --color-text-muted: #718096;
+            --color-danger: #e53e3e;
+            --color-danger-dark: #c53030;
+            --color-success: #38a169;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+            --transition: 0.2s ease;
+            --font: 'Inter', sans-serif;
+        }
+
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
+            font-family: var(--font);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            min-height: 100vh;
+        }
+
+        /* ===== PRELOADER ===== */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--color-surface);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 9999;
+        }
+
+        #preloader img {
+            width: clamp(120px, 20vw, 220px);
+            height: auto;
+        }
+
+        #preloader p {
+            font-size: 14px;
+            color: var(--color-text-muted);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        /* ===== LAYOUT ===== */
+        #conteudo {
+            display: none;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            padding: 24px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        .page-header-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .page-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        .page-header p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            margin-top: 2px;
         }
 
         .container {
-            background-color: #fdd835;
-            max-width: 1000px;
-            margin: auto;
-            padding: 20px;
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 32px 24px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
+        /* ===== CARDS ===== */
         .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 18px;
+        .card-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header-icon {
+            width: 34px;
+            height: 34px;
+            background: var(--color-primary-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .card-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text);
+            letter-spacing: -0.2px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* ===== FORM GRID ===== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
         }
 
         label {
-            display: block;
-            margin-top: 10px;
-            font-weight: bold;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         select,
-        input {
+        input[type="text"] {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 14px;
+            color: var(--color-text);
+            background: var(--color-surface);
+            transition: border-color var(--transition), box-shadow var(--transition);
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
         }
 
-        button {
-            background: #d89700;
-            color: white;
-            border: none;
+        input[type="text"] {
+            background-image: none;
+            padding-right: 12px;
+        }
+
+        select:focus,
+        input[type="text"]:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.15);
+        }
+
+        select:hover,
+        input[type="text"]:hover {
+            border-color: #b0bec5;
+        }
+
+        /* ===== BOTÕES ===== */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 10px 20px;
-            border-radius: 5px;
-            margin-top: 10px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
+            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+            white-space: nowrap;
         }
 
-        button:hover {
-            background: #b67c00;
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(245, 166, 35, 0.35);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            box-shadow: 0 4px 12px rgba(245, 166, 35, 0.45);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--color-text-muted);
+            border: 1.5px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: var(--color-text);
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+            box-shadow: 0 4px 12px rgba(56, 161, 105, 0.4);
+        }
+
+        /* ===== TABELA ===== */
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 420px;
+            margin-top: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            scroll-behavior: smooth;
+        }
+
+        /* Contador de resultados */
+        .table-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            margin-bottom: 4px;
+            font-size: 12px;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .table-info span {
+            background: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            font-size: 13px;
         }
 
-        th,
-        td {
-            padding: 10px;
-            border: 1px solid #ccc;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        .resultado {
-            margin-top: 15px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        #preloader {
-            position: fixed;
+        thead {
+            background: #f8fafc;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
+            z-index: 2;
+        }
+
+        th {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 2px solid var(--color-border);
+            white-space: nowrap;
+            box-shadow: 0 1px 0 var(--color-border);
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--color-text);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+
+        /* Linhas alternadas */
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        tbody tr {
+            transition: background var(--transition);
+        }
+
+        tbody tr:hover {
+            background: var(--color-primary-light);
+        }
+
+        td:last-child {
+            font-weight: 600;
+            color: var(--color-success);
+        }
+
+        /* Estado vazio da tabela */
+        .table-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-text-muted);
+            font-size: 13px;
+        }
+
+        .table-empty-icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.5;
+        }
+
+        /* ===== CALCULADORA ===== */
+        /* Par campo + unidade na mesma linha */
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 110px;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .resultado-box {
+            margin-top: 20px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, var(--color-primary-light) 0%, #fff8e8 100%);
+            border: 1.5px solid #fde68a;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
-            justify-content: center;
-            z-index: 9999;
+            justify-content: space-between;
+            gap: 12px;
         }
 
-        #preloader img {
-            width: 25vw;
-            max-width: 280px;
-            min-width: 200px;
-            height: auto;
+        .resultado-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .fade-out {
-            opacity: 0;
-            transition: opacity 1s ease;
-            pointer-events: none;
+        #resultado-m2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            letter-spacing: -0.5px;
         }
 
-        #conteudo {
-            display: none;
+        /* ===== FOOTER ===== */
+        .page-footer {
+            text-align: center;
+            padding: 16px 24px 32px;
+            font-size: 12px;
+            color: var(--color-text-muted);
         }
 
-        @media (max-width: 600px) {
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .page-header-inner { padding: 0 16px; }
+            .container { padding: 20px 16px 40px; gap: 16px; }
+            .card-body { padding: 16px; }
+            .card-header { padding: 16px 16px 12px; }
+            .form-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .calc-grid { grid-template-columns: 1fr; gap: 12px; }
+            .table-container { max-height: 360px; }
+            #resultado-m2 { font-size: 22px; }
+        }
 
-            th,
-            td {
-                font-size: 12px;
-                padding: 6px;
-            }
-
-            .card {
-                padding: 15px;
-            }
-
-            .resultado {
-                font-size: 16px;
-            }
+        @media (max-width: 480px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .calc-grid { grid-template-columns: 1fr; }
+            .input-row { grid-template-columns: 1fr 90px; }
+            .btn-group { flex-direction: column; }
+            .btn { justify-content: center; width: 100%; }
+            .resultado-box { flex-direction: column; align-items: flex-start; gap: 6px; }
+            #resultado-m2 { font-size: 26px; }
+            th, td { font-size: 12px; padding: 9px 10px; }
+            .table-container { max-height: 300px; }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- PRELOADER -->
     <div id="preloader">
         <img src="carregando_animado.gif" alt="Carregando...">
+        <p>Carregando serviços...</p>
     </div>
-    <div class="container">
-        <div class="card">
-            <h2>Consultar Serviços</h2>
-            <label>Categoria:</label>
-            <select id="categoria"></select>
-            <label>Descrição:</label>
-            <select id="descricao"></select>
-            <label>Tamanho:</label>
-            <select id="tam"></select>
-            <label>Cores:</label>
-            <select id="cores"></select>
-            <label>Qtde:</label>
-            <select id="qtde"></select>
-            <label>Comissão:</label>
-            <input type="text" id="comissao" placeholder="% comissão">
-            <button id="pesquisar-btn">Pesquisar</button>
-            <button id="limpar-btn">Limpar</button>
-            <div class="table-container">
-                <table id="tabela-servicos">
-                    <thead>
-                        <tr>
-                            <th>Código</th>
-                            <th>Categoria</th>
-                            <th>Descrição</th>
-                            <th>Cores</th>
-                            <th>Qtd</th>
-                            <th>Tamanho</th>
-                            <th>Prazo</th>
-                            <th>Preço c/ Comissão</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div id="conteudo">
+
+        <!-- HEADER -->
+        <header class="page-header">
+            <div class="page-header-inner">
+                <div class="page-header-icon">🖨️</div>
+                <div>
+                    <h1>Consulta de Serviços</h1>
+                    <p>Pesquise preços e calcule valores por m²</p>
+                </div>
             </div>
+        </header>
+
+        <div class="container">
+
+            <!-- CARD: CONSULTAR SERVIÇOS -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">🔍</div>
+                    <h2>Consultar Serviços</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="categoria">Categoria</label>
+                            <select id="categoria"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição</label>
+                            <select id="descricao"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tam">Tamanho</label>
+                            <select id="tam"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cores">Cores</label>
+                            <select id="cores"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qtde">Qtde</label>
+                            <select id="qtde"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="comissao">Comissão (%)</label>
+                            <input type="text" id="comissao" placeholder="Ex: 10">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="pesquisar-btn">
+                            🔎 Pesquisar
+                        </button>
+                        <button class="btn btn-secondary" id="limpar-btn">
+                            ✕ Limpar
+                        </button>
+                    </div>
+
+                    <div class="table-info">
+                        <span id="resultado-count">0 resultados</span>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabela-servicos">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Categoria</th>
+                                    <th>Descrição</th>
+                                    <th>Cores</th>
+                                    <th>Qtd</th>
+                                    <th>Tamanho</th>
+                                    <th>Prazo</th>
+                                    <th>Preço c/ Comissão</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="8" class="table-empty">
+                                        <span class="table-empty-icon">🔍</span>
+                                        Use os filtros acima e clique em Pesquisar
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD: CALCULADORA M² -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-icon">📐</div>
+                    <h2>Calculadora Metro Quadrado</h2>
+                </div>
+                <div class="card-body">
+                    <div class="calc-grid">
+                        <!-- Largura + Unidade na mesma linha -->
+                        <div class="form-group">
+                            <label>Largura</label>
+                            <div class="input-row">
+                                <input type="text" id="largura" placeholder="Ex: 2.5">
+                                <select id="unidade-largura">
+                                    <option value="m">m</option>
+                                    <option value="cm">cm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Altura + Unidade na mesma linha -->
+                        <div class="form-group">
+                            <label>Altura</label>
+                            <div class="input-row">
+                                <input type="text" id="altura" placeholder="Ex: 1.5">
+                                <select id="unidade-altura">
+                                    <option value="m">m</option>
+                                    <option value="cm">cm</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="text" id="quantidade" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor">Valor por m²</label>
+                            <input type="text" id="valor" placeholder="Ex: 45.00">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-success" id="calcular-btn">
+                            ✓ Calcular
+                        </button>
+                    </div>
+
+                    <div class="resultado-box">
+                        <span class="resultado-label">Total estimado</span>
+                        <span id="resultado-m2">R$ 0,00</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="card">
-            <h2>Calculadora metro quadrado</h2>
-            <label>Largura</label>
-            <input type="text" id="largura" placeholder="Ex: 2.5">
-            <label>Unidade</label>
-            <select id="unidade-largura">
-                <option value="m">m</option>
-                <option value="cm">cm</option>
-            </select>
-            <label>Altura</label>
-            <input type="text" id="altura" placeholder="Ex: 1.5">
-            <label>Unidade</label>
-            <select id="unidade-altura">
-                <option value="m">m</option>
-                <option value="cm">cm</option>
-            </select>
-            <label>Quantidade</label>
-            <input type="text" id="quantidade" value="1">
-            <label>Valor por m²</label>
-            <input type="text" id="valor" placeholder="Ex: 45.00">
-            <button id="calcular-btn">calcular</button>
-            <div class="resultado" id="resultado-m2">R$00,00</div>
-        </div>
+        <footer class="page-footer">
+            © 2026 · Consulta de Serviços Gráficos · AbrDev
+        </footer>
+
     </div>
+
     <script src="script.js"></script>
 </body>
 
