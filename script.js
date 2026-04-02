@@ -118,6 +118,15 @@ function aplicarFiltros() {
         return matchCategoria && matchDescricao && matchTam && matchCores && matchQtde;
     });
 
+    // Atualiza contador
+    const countEl = document.getElementById("resultado-count");
+    if (countEl) countEl.textContent = `${resultados.length} resultado${resultados.length !== 1 ? 's' : ''}`;
+
+    if (resultados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">😕</span>Nenhum resultado encontrado</td></tr>`;
+        return;
+    }
+
     resultados.forEach(item => {
         const precoFinal = item.preco + (item.preco * comissao / 100);
         const row = document.createElement("tr");
@@ -143,9 +152,10 @@ function limparCampos() {
     document.getElementById("cores").value = "";
     document.getElementById("qtde").value = "";
     document.getElementById("comissao").value = "";
-    // Limpa a tabela de resultados
     const tbody = document.querySelector("#tabela-servicos tbody");
-    tbody.innerHTML = "";
+    tbody.innerHTML = `<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">🔍</span>Use os filtros acima e clique em Pesquisar</td></tr>`;
+    const countEl = document.getElementById("resultado-count");
+    if (countEl) countEl.textContent = "0 resultados";
 }
 
 function calcularM2() {
