@@ -5,8 +5,11 @@ let servicosFiltrados = []; // guarda o resultado da última filtragem por categ
 // Carrega os dados da API Flask
 async function carregarDados() {
     try {
-        const response = await fetch("https://grafica-api.duckdns.org/api/servicos");
-        servicos = await response.json();
+        const response = await fetch("https://grafica-api.duckdns.org/api/servicos?por_pagina=3000");
+        const json = await response.json();
+        
+        // Pega a lista de itens de dentro do campo 'dados' da API
+        servicos = json.dados || [];
         preencherCategorias();
 
         const preloader = document.getElementById("preloader");
